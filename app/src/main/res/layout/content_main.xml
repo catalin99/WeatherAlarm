@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FC8DFAEE"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <DigitalClock
+        android:id="@+id/simpleDigitalClock"
+        android:layout_width="221dp"
+        android:layout_height="74dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:background="#69A1DA"
+        android:padding="20dp"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview1"
+        android:layout_width="333dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="108dp"
+        android:background="#33A1A3"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="#248887"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relLay1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3AE4D4"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/points1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="29dp"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timezonetxt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="152dp"
+                android:layout_marginTop="29dp"
+                android:text="AM"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/viewbtn1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="EditAlarm"
+                android:text="@string/view" />
+
+            <Button
+                android:id="@+id/deletebtn1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="7dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="DeleteAlarm"
+                android:text="@string/delete" />
+
+            <TextView
+                android:id="@+id/hourtxt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="28dp"
+                android:text="12"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/mintxt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:text="17"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview2"
+        android:layout_width="333dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="232dp"
+        android:background="#33A1A3"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="#248887"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relLay2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3AE4D4"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/points2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="29dp"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timezonetxt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="152dp"
+                android:layout_marginTop="29dp"
+                android:text="AM"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/viewbtn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="EditAlarm"
+                android:text="@string/view" />
+
+            <Button
+                android:id="@+id/deletebtn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="7dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="DeleteAlarm"
+                android:text="@string/delete" />
+
+            <TextView
+                android:id="@+id/hourtxt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/mintxt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview3"
+        android:layout_width="333dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="360dp"
+        android:background="#33A1A3"
+        android:onClick="EditAlarm"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="#248887"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relLay3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3AE4D4"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/points3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="29dp"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timezonetxt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="152dp"
+                android:layout_marginTop="29dp"
+                android:text="AM"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/viewbtn3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="EditAlarm"
+                android:text="@string/view" />
+
+            <Button
+                android:id="@+id/deletebtn3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="7dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="DeleteAlarm"
+                android:text="@string/delete" />
+
+            <TextView
+                android:id="@+id/hourtxt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/mintxt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview4"
+        android:layout_width="333dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="484dp"
+        android:background="#33A1A3"
+        android:onClick="EditAlarm"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="#248887"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relLay4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3AE4D4"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/points4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="29dp"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timezonetxt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="152dp"
+                android:layout_marginTop="29dp"
+                android:text="AM"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/viewbtn4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="EditAlarm"
+                android:text="@string/view" />
+
+            <Button
+                android:id="@+id/deletebtn4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="7dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="DeleteAlarm"
+                android:text="@string/delete" />
+
+            <TextView
+                android:id="@+id/hourtxt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/mintxt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview5"
+        android:layout_width="333dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="612dp"
+        android:background="#33A1A3"
+        android:onClick="EditAlarm"
+        android:textAlignment="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="#248887"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relLay5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3AE4D4"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/points5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="92dp"
+                android:layout_marginTop="29dp"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/timezonetxt5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="152dp"
+                android:layout_marginTop="29dp"
+                android:text="AM"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/viewbtn5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="EditAlarm"
+                android:text="@string/view" />
+
+            <Button
+                android:id="@+id/deletebtn5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="7dp"
+                android:backgroundTint="#279E8D"
+                android:onClick="DeleteAlarm"
+                android:text="@string/delete" />
+
+            <TextView
+                android:id="@+id/hourtxt5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/mintxt5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="104dp"
+                android:layout_marginTop="28dp"
+                android:text="00"
+                android:textSize="30sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FC8DFAEE"
+    tools:context=".EditTimeActivity">
+
+    <Spinner
+        android:id="@+id/spinnerTimezone"
+        android:layout_width="93dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="52dp"
+        android:tooltipText="00"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spinnerMinutes"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAlarm" />
+
+    <Spinner
+        android:id="@+id/spinnerMinutes"
+        android:layout_width="96dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:tooltipText="00"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerTimezone"
+        app:layout_constraintStart_toEndOf="@+id/pointsOld2"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAlarm" />
+
+    <TextView
+        android:id="@+id/pointsOld2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="9dp"
+        android:text=":"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerMinutes"
+        app:layout_constraintStart_toEndOf="@+id/spinnerHour"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAlarm" />
+
+    <TextView
+        android:id="@+id/pointsOld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="51dp"
+        android:text=":"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewNewAlarm"
+        app:layout_constraintEnd_toStartOf="@+id/mintxtOld"
+        app:layout_constraintStart_toEndOf="@+id/hourtxtOld"
+        app:layout_constraintTop_toBottomOf="@+id/textViewActualAlarm" />
+
+    <TextView
+        android:id="@+id/timezonetxtOld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="50dp"
+        android:text="AM"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewNewAlarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/mintxtOld"
+        app:layout_constraintTop_toBottomOf="@+id/textViewActualAlarm" />
+
+    <TextView
+        android:id="@+id/hourtxtOld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="128dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="50dp"
+        android:text="00"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewNewAlarm"
+        app:layout_constraintEnd_toStartOf="@+id/pointsOld"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewActualAlarm" />
+
+    <TextView
+        android:id="@+id/mintxtOld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="50dp"
+        android:text="00"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewNewAlarm"
+        app:layout_constraintEnd_toStartOf="@+id/timezonetxtOld"
+        app:layout_constraintStart_toEndOf="@+id/pointsOld"
+        app:layout_constraintTop_toBottomOf="@+id/textViewActualAlarm" />
+
+    <DigitalClock
+        android:id="@+id/simpleDigitalClock2"
+        android:layout_width="221dp"
+        android:layout_height="74dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:background="#69A1DA"
+        android:padding="20dp"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewActualAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Old Alarm"
+        android:textColor="#98040E37"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/simpleDigitalClock2" />
+
+    <TextView
+        android:id="@+id/textViewNewAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="421dp"
+        android:text="New Alarm"
+        android:textColor="#98040E37"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/simpleDigitalClock2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Spinner
+        android:id="@+id/spinnerHour"
+        android:layout_width="100dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="63dp"
+        android:layout_marginTop="16dp"
+        android:tooltipText="00"
+        app:layout_constraintEnd_toStartOf="@+id/pointsOld2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNewAlarm" />
+
+    <Button
+        android:id="@+id/btnSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="156dp"
+        android:layout_marginBottom="300dp"
+        android:backgroundTint="#369393"
+        android:onClick="SetAlarm"
+        android:text="Set Alarm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointsOld2" />
+</androidx.constraintlayout.widget.ConstraintLayout>
