@@ -1,45 +1,50 @@
 package catalin.facultate.weatheralarm;
 
-import android.app.AlarmManager;
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
-
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.NotificationCompat;
-
 import android.provider.AlarmClock;
+import android.renderscript.RenderScript;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.gson.JsonArray;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+
+import okhttp3.internal.http2.Header;
+
+import static android.renderscript.RenderScript.*;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,21 +52,17 @@ public class MainActivity extends AppCompatActivity {
     public static final String MINUTES = "catalin.facultate.weatheralarm.MINUTES";
     public static final String TIMEZONE = "catalin.facultate.weatheralarm.TIMEZONE";
     public static final String ALARM = "catalin.facultate.weatheralarm.ALARM";
-    PendingIntent pi;
-    BroadcastReceiver br;
-    AlarmManager am;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
-    public void EditAlarm(View view)
-    {
+    public void EditAlarm(View view) {
         int buttonPressedID = view.getId();
         TextView hour = null;
         TextView min = null;
         TextView timezone = null;
         Switch switchAlarm = null;
         int nr = 0;
-        switch (buttonPressedID)
-        {
+        switch (buttonPressedID) {
             case R.id.viewbtn1:
                 hour = findViewById(R.id.hourtxt1);
                 min = findViewById(R.id.mintxt1);
@@ -74,28 +75,28 @@ public class MainActivity extends AppCompatActivity {
                 min = findViewById(R.id.mintxt2);
                 timezone = findViewById(R.id.timezonetxt2);
                 switchAlarm = findViewById(R.id.switch2);
-                nr=2;
+                nr = 2;
                 break;
             case R.id.viewbtn3:
                 hour = findViewById(R.id.hourtxt3);
                 min = findViewById(R.id.mintxt3);
                 timezone = findViewById(R.id.timezonetxt3);
                 switchAlarm = findViewById(R.id.switch3);
-                nr=3;
+                nr = 3;
                 break;
             case R.id.viewbtn4:
                 hour = findViewById(R.id.hourtxt4);
                 min = findViewById(R.id.mintxt4);
                 timezone = findViewById(R.id.timezonetxt4);
                 switchAlarm = findViewById(R.id.switch4);
-                nr=4;
+                nr = 4;
                 break;
             case R.id.viewbtn5:
                 hour = findViewById(R.id.hourtxt5);
                 min = findViewById(R.id.mintxt5);
                 timezone = findViewById(R.id.timezonetxt5);
                 switchAlarm = findViewById(R.id.switch5);
-                nr=5;
+                nr = 5;
                 break;
         }
         String hourStr = hour.getText().toString();
@@ -110,75 +111,78 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void DeleteAlarm(View view)
-    {
-         int buttonPressedID = view.getId();
-         TextView hour = null;
-         TextView min = null;
-         TextView timezone = null;
-         Switch switchAlarm = null;
-         int nr = 0;
-         switch (buttonPressedID)
-         {
-             case R.id.deletebtn1:
-                 hour = findViewById(R.id.hourtxt1);
-                 min = findViewById(R.id.mintxt1);
-                 timezone = findViewById(R.id.timezonetxt1);
-                 switchAlarm = findViewById(R.id.switch1);
-                 nr=1;
-                 break;
-             case R.id.deletebtn2:
-                 hour = findViewById(R.id.hourtxt2);
-                 min = findViewById(R.id.mintxt2);
-                 timezone = findViewById(R.id.timezonetxt2);
-                 switchAlarm = findViewById(R.id.switch2);
-                 nr=2;
-                 break;
-             case R.id.deletebtn3:
-                 hour = findViewById(R.id.hourtxt3);
-                 min = findViewById(R.id.mintxt3);
-                 timezone = findViewById(R.id.timezonetxt3);
-                 switchAlarm = findViewById(R.id.switch3);
-                 nr=3;
+    public void DeleteAlarm(View view) {
+        int buttonPressedID = view.getId();
+        TextView hour = null;
+        TextView min = null;
+        TextView timezone = null;
+        Switch switchAlarm = null;
+        int nr = 0;
+        switch (buttonPressedID) {
+            case R.id.deletebtn1:
+                hour = findViewById(R.id.hourtxt1);
+                min = findViewById(R.id.mintxt1);
+                timezone = findViewById(R.id.timezonetxt1);
+                switchAlarm = findViewById(R.id.switch1);
+                nr = 1;
                 break;
-             case R.id.deletebtn4:
-                 hour = findViewById(R.id.hourtxt4);
-                 min = findViewById(R.id.mintxt4);
-                 timezone = findViewById(R.id.timezonetxt4);
-                 switchAlarm = findViewById(R.id.switch4);
-                 nr=4;
-                 break;
-             case R.id.deletebtn5:
-                 hour = findViewById(R.id.hourtxt5);
-                 min = findViewById(R.id.mintxt5);
-                 timezone = findViewById(R.id.timezonetxt5);
-                 switchAlarm = findViewById(R.id.switch5);
-                 nr=5;
-                 break;
-         }
-         if(hour!=null && min!=null && timezone!=null) {
-             hour.setText("00");
-             min.setText("00");
-             timezone.setText("AM");
-             switchAlarm.setText("OFF");
-             switchAlarm.setChecked(false);
-             SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
-             SharedPreferences.Editor editor = sharedPreferences.edit();
-             editor.putString("hour"+nr, hour.getText().toString());
-             editor.putString("minute"+nr, min.getText().toString());
-             editor.putString("timezone"+nr, timezone.getText().toString());
-             editor.putString("switcher"+nr, "OFF");
-             editor.commit();
-         }
+            case R.id.deletebtn2:
+                hour = findViewById(R.id.hourtxt2);
+                min = findViewById(R.id.mintxt2);
+                timezone = findViewById(R.id.timezonetxt2);
+                switchAlarm = findViewById(R.id.switch2);
+                nr = 2;
+                break;
+            case R.id.deletebtn3:
+                hour = findViewById(R.id.hourtxt3);
+                min = findViewById(R.id.mintxt3);
+                timezone = findViewById(R.id.timezonetxt3);
+                switchAlarm = findViewById(R.id.switch3);
+                nr = 3;
+                break;
+            case R.id.deletebtn4:
+                hour = findViewById(R.id.hourtxt4);
+                min = findViewById(R.id.mintxt4);
+                timezone = findViewById(R.id.timezonetxt4);
+                switchAlarm = findViewById(R.id.switch4);
+                nr = 4;
+                break;
+            case R.id.deletebtn5:
+                hour = findViewById(R.id.hourtxt5);
+                min = findViewById(R.id.mintxt5);
+                timezone = findViewById(R.id.timezonetxt5);
+                switchAlarm = findViewById(R.id.switch5);
+                nr = 5;
+                break;
+        }
+        if (hour != null && min != null && timezone != null) {
+            hour.setText("00");
+            min.setText("00");
+            timezone.setText("AM");
+            switchAlarm.setText("OFF");
+            switchAlarm.setChecked(false);
+            SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("hour" + nr, hour.getText().toString());
+            editor.putString("minute" + nr, min.getText().toString());
+            editor.putString("timezone" + nr, timezone.getText().toString());
+            editor.putString("switcher" + nr, "OFF");
+            editor.commit();
+        }
 
 
     }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        AndroidNetworking.initialize(getApplicationContext());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         InitializeAlarms();
         GetAlarms();
 
@@ -207,56 +211,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void InitializeAlarms()
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    private void InitializeAlarms() {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        if(!sharedPreferences.contains("hour1"))
+        if (!sharedPreferences.contains("hour1"))
             editor.putString("hour1", "12");
-        if(!sharedPreferences.contains("minute1"))
+        if (!sharedPreferences.contains("minute1"))
             editor.putString("minute1", "00");
-        if(!sharedPreferences.contains("timezone1"))
+        if (!sharedPreferences.contains("timezone1"))
             editor.putString("timezone1", "AM");
-        if(!sharedPreferences.contains("switcher1"))
+        if (!sharedPreferences.contains("switcher1"))
             editor.putString("switcher1", "OFF");
-        if(!sharedPreferences.contains("hour2"))
+        if (!sharedPreferences.contains("hour2"))
             editor.putString("hour2", "12");
-        if(!sharedPreferences.contains("minute2"))
+        if (!sharedPreferences.contains("minute2"))
             editor.putString("minute2", "00");
-        if(!sharedPreferences.contains("timezone2"))
+        if (!sharedPreferences.contains("timezone2"))
             editor.putString("timezone2", "AM");
-        if(!sharedPreferences.contains("switcher2"))
+        if (!sharedPreferences.contains("switcher2"))
             editor.putString("switcher2", "OFF");
-        if(!sharedPreferences.contains("hour3"))
+        if (!sharedPreferences.contains("hour3"))
             editor.putString("hour3", "12");
-        if(!sharedPreferences.contains("minute3"))
+        if (!sharedPreferences.contains("minute3"))
             editor.putString("minute3", "00");
-        if(!sharedPreferences.contains("timezone3"))
+        if (!sharedPreferences.contains("timezone3"))
             editor.putString("timezone3", "AM");
-        if(!sharedPreferences.contains("switcher3"))
+        if (!sharedPreferences.contains("switcher3"))
             editor.putString("switcher3", "OFF");
-        if(!sharedPreferences.contains("hour4"))
+        if (!sharedPreferences.contains("hour4"))
             editor.putString("hour4", "12");
-        if(!sharedPreferences.contains("minute4"))
+        if (!sharedPreferences.contains("minute4"))
             editor.putString("minute4", "00");
-        if(!sharedPreferences.contains("timezone4"))
+        if (!sharedPreferences.contains("timezone4"))
             editor.putString("timezone4", "AM");
-        if(!sharedPreferences.contains("switcher4"))
+        if (!sharedPreferences.contains("switcher4"))
             editor.putString("switcher4", "OFF");
-        if(!sharedPreferences.contains("hour5"))
+        if (!sharedPreferences.contains("hour5"))
             editor.putString("hour5", "12");
-        if(!sharedPreferences.contains("minute5"))
+        if (!sharedPreferences.contains("minute5"))
             editor.putString("minute5", "00");
-        if(!sharedPreferences.contains("timezone5"))
+        if (!sharedPreferences.contains("timezone5"))
             editor.putString("timezone5", "AM");
-        if(!sharedPreferences.contains("switcher5"))
+        if (!sharedPreferences.contains("switcher5"))
             editor.putString("switcher5", "OFF");
         editor.commit();
     }
 
-    private void GetAlarms()
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    private void GetAlarms() {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         TextView hourtxt1 = findViewById(R.id.hourtxt1);
         hourtxt1.setText(sharedPreferences.getString("hour1", "12"));
         TextView minutetxt1 = findViewById(R.id.mintxt1);
@@ -264,13 +266,10 @@ public class MainActivity extends AppCompatActivity {
         TextView timezonetxt1 = findViewById(R.id.timezonetxt1);
         timezonetxt1.setText(sharedPreferences.getString("timezone1", "AM"));
         Switch switcher1 = findViewById(R.id.switch1);
-        if(sharedPreferences.getString("switcher1", "OFF").toString().equals( "ON"))
-        {
+        if (sharedPreferences.getString("switcher1", "OFF").toString().equals("ON")) {
             switcher1.setChecked(true);
             switcher1.setText("ON");
-        }
-        else
-        {
+        } else {
             switcher1.setChecked(false);
             switcher1.setText("OFF");
         }
@@ -282,13 +281,10 @@ public class MainActivity extends AppCompatActivity {
         TextView timezonetxt2 = findViewById(R.id.timezonetxt2);
         timezonetxt2.setText(sharedPreferences.getString("timezone2", "AM"));
         Switch switcher2 = findViewById(R.id.switch2);
-        if(sharedPreferences.getString("switcher2", "OFF").toString().equals( "ON"))
-        {
+        if (sharedPreferences.getString("switcher2", "OFF").toString().equals("ON")) {
             switcher2.setChecked(true);
             switcher2.setText("ON");
-        }
-        else
-        {
+        } else {
             switcher2.setChecked(false);
             switcher2.setText("OFF");
         }
@@ -301,13 +297,10 @@ public class MainActivity extends AppCompatActivity {
         TextView timezonetxt3 = findViewById(R.id.timezonetxt3);
         timezonetxt3.setText(sharedPreferences.getString("timezone3", "AM"));
         Switch switcher3 = findViewById(R.id.switch3);
-        if(sharedPreferences.getString("switcher3", "OFF").toString().equals( "ON"))
-        {
+        if (sharedPreferences.getString("switcher3", "OFF").toString().equals("ON")) {
             switcher3.setChecked(true);
             switcher3.setText("ON");
-        }
-        else
-        {
+        } else {
             switcher3.setChecked(false);
             switcher3.setText("OFF");
         }
@@ -320,13 +313,10 @@ public class MainActivity extends AppCompatActivity {
         TextView timezonetxt4 = findViewById(R.id.timezonetxt4);
         timezonetxt4.setText(sharedPreferences.getString("timezone4", "AM"));
         Switch switcher4 = findViewById(R.id.switch4);
-        if(sharedPreferences.getString("switcher4", "OFF").toString().equals( "ON"))
-        {
+        if (sharedPreferences.getString("switcher4", "OFF").toString().equals("ON")) {
             switcher4.setChecked(true);
             switcher4.setText("ON");
-        }
-        else
-        {
+        } else {
             switcher4.setChecked(false);
             switcher4.setText("OFF");
         }
@@ -339,13 +329,10 @@ public class MainActivity extends AppCompatActivity {
         TextView timezonetxt5 = findViewById(R.id.timezonetxt5);
         timezonetxt5.setText(sharedPreferences.getString("timezone5", "AM"));
         Switch switcher5 = findViewById(R.id.switch5);
-        if(sharedPreferences.getString("switcher5", "OFF").toString().equals( "ON"))
-        {
+        if (sharedPreferences.getString("switcher5", "OFF").toString().equals("ON")) {
             switcher5.setChecked(true);
             switcher5.setText("ON");
-        }
-        else
-        {
+        } else {
             switcher5.setChecked(false);
             switcher5.setText("OFF");
         }
@@ -353,21 +340,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void EventStart1(View view)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    public void EventStart1(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Switch switcher1 = findViewById(R.id.switch1);
-        if(switcher1.isChecked())
-        {
+        if (switcher1.isChecked()) {
             editor.putString("switcher1", "ON");
             switcher1.setText("ON");
             TextView hour = findViewById(R.id.hourtxt1);
             TextView minutes = findViewById(R.id.mintxt1);
             TextView timezone = findViewById(R.id.timezonetxt1);
-            AddAlarm(hour.getText().toString(), minutes.getText().toString(),  timezone.getText().toString());
-        }
-        else {
+            AddAlarm(hour.getText().toString(), minutes.getText().toString(), timezone.getText().toString());
+        } else {
             editor.putString("switcher1", "OFF");
             switcher1.setText("OFF");
         }
@@ -375,101 +359,157 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void EventStart2(View view)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    public void EventStart2(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Switch switcher2 = findViewById(R.id.switch2);
-        if(switcher2.isChecked())
-        {
+        if (switcher2.isChecked()) {
             editor.putString("switcher2", "ON");
             switcher2.setText("ON");
             TextView hour = findViewById(R.id.hourtxt2);
             TextView minutes = findViewById(R.id.mintxt2);
             TextView timezone = findViewById(R.id.timezonetxt2);
-            AddAlarm(hour.getText().toString(), minutes.getText().toString(),  timezone.getText().toString());
-        }
-        else {
+            AddAlarm(hour.getText().toString(), minutes.getText().toString(), timezone.getText().toString());
+        } else {
             editor.putString("switcher2", "OFF");
             switcher2.setText("OFF");
         }
         editor.commit();
     }
 
-    public void EventStart3(View view)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    public void EventStart3(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Switch switcher3 = findViewById(R.id.switch3);
-        if(switcher3.isChecked())
-        {
+        if (switcher3.isChecked()) {
             editor.putString("switcher3", "ON");
             switcher3.setText("ON");
             TextView hour = findViewById(R.id.hourtxt3);
             TextView minutes = findViewById(R.id.mintxt3);
             TextView timezone = findViewById(R.id.timezonetxt3);
-            AddAlarm(hour.getText().toString(), minutes.getText().toString(),  timezone.getText().toString());
-        }
-        else {
+            AddAlarm(hour.getText().toString(), minutes.getText().toString(), timezone.getText().toString());
+        } else {
             editor.putString("switcher3", "OFF");
             switcher3.setText("OFF");
         }
         editor.commit();
     }
 
-    public void EventStart4(View view)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    public void EventStart4(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Switch switcher4 = findViewById(R.id.switch4);
-        if(switcher4.isChecked())
-        {
+        if (switcher4.isChecked()) {
             editor.putString("switcher4", "ON");
             switcher4.setText("ON");
             TextView hour = findViewById(R.id.hourtxt4);
             TextView minutes = findViewById(R.id.mintxt4);
             TextView timezone = findViewById(R.id.timezonetxt4);
-            AddAlarm(hour.getText().toString(), minutes.getText().toString(),  timezone.getText().toString());
-        }
-        else {
+            AddAlarm(hour.getText().toString(), minutes.getText().toString(), timezone.getText().toString());
+        } else {
             editor.putString("switcher4", "OFF");
             switcher4.setText("OFF");
         }
         editor.commit();
     }
 
-    public void EventStart5(View view)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("alarms",MODE_PRIVATE);
+    public void EventStart5(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Switch switcher5 = findViewById(R.id.switch5);
-        if(switcher5.isChecked())
-        {
+        if (switcher5.isChecked()) {
             editor.putString("switcher5", "ON");
             switcher5.setText("ON");
             TextView hour = findViewById(R.id.hourtxt5);
             TextView minutes = findViewById(R.id.mintxt5);
             TextView timezone = findViewById(R.id.timezonetxt5);
-            AddAlarm(hour.getText().toString(), minutes.getText().toString(),  timezone.getText().toString());
-        }
-        else {
+            AddAlarm(hour.getText().toString(), minutes.getText().toString(), timezone.getText().toString());
+        } else {
             editor.putString("switcher5", "OFF");
             switcher5.setText("OFF");
         }
         editor.commit();
     }
 
-    public void AddAlarm(String hour, String minutes, String timezone)
-    {
+    public void AddAlarm(String hour, String minutes, String timezone) {
 //        if(hour.startsWith("0"))
 //            hour = hour.replace("0", "");
-        int realHour = timezone.equals("PM") ? Integer.parseInt(hour)+12 : Integer.parseInt(hour);
+        int realHour = timezone.equals("PM") ? Integer.parseInt(hour) + 12 : Integer.parseInt(hour);
         int realMinutes = Integer.parseInt(minutes);
         Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
         intent.putExtra(AlarmClock.EXTRA_HOUR, realHour);
         intent.putExtra(AlarmClock.EXTRA_MINUTES, realMinutes);
-        startActivity(intent);
+        GetGpsData(intent);
+        //startActivity(intent);
     }
+
+
+    public void GetGpsData(final Intent intent) {
+        if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    Location location = task.getResult();
+                    if(location != null){
+                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(
+                                    location.getLatitude(), location.getLongitude(), 1
+                            );
+                            Log.i("gps", "Lat:" + addresses.get(0).getLatitude() + "; Long:"+addresses.get(0).getLongitude());
+                            GetWeather(addresses.get(0).getLatitude(), addresses.get(0).getLongitude(), addresses.get(0).getLocality(), intent);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+    }
+
+    public void GetWeather(double latitude, double longitude, final String address, final Intent intent)
+    {
+        String KEY = "decff345052161600a68df9e762f7c08";
+        String API = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon=" + longitude + "&units=metric&exclude=hourly,daily&appid=" + KEY;
+        AndroidNetworking.get(API)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("weather", response.toString());
+                        JSONObject currentWeather = null;
+                        try {
+                            currentWeather = response.getJSONObject("current");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            JSONArray description = currentWeather.getJSONArray("weather");
+                            String details = "The weather in " + address + " is " + description.getJSONObject(0).get("description").toString() + " and the temperature is " + currentWeather.get("temp").toString() + " celsius degrees";
+                            intent.putExtra(AlarmClock.EXTRA_MESSAGE, details);
+                            startActivity(intent);
+                            Log.i("details", details);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.i("Error", anError.getMessage());
+                    }
+                });
+
+
+    }
+
 
 }
 
