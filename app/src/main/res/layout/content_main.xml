@@ -113,6 +113,21 @@
                 android:text="17"
                 android:textSize="30sp" />
 
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="82dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="71dp"
+                android:checked="false"
+                android:onClick="EventStart1"
+                android:text="OFF"
+                android:textOff="OFF"
+                android:textOn="ON"
+                tools:checked="false" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
@@ -136,6 +151,17 @@
             android:layout_height="match_parent"
             android:background="#3AE4D4"
             android:textAlignment="center">
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="82dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="71dp"
+                android:onClick="EventStart2"
+                android:text="Off" />
 
             <TextView
                 android:id="@+id/points2"
@@ -230,6 +256,17 @@
             android:background="#3AE4D4"
             android:textAlignment="center">
 
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="82dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="71dp"
+                android:onClick="EventStart3"
+                android:text="Off" />
+
             <TextView
                 android:id="@+id/points3"
                 android:layout_width="wrap_content"
@@ -323,6 +360,17 @@
             android:background="#3AE4D4"
             android:textAlignment="center">
 
+            <Switch
+                android:id="@+id/switch4"
+                android:layout_width="82dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="71dp"
+                android:onClick="EventStart4"
+                android:text="Off" />
+
             <TextView
                 android:id="@+id/points4"
                 android:layout_width="wrap_content"
@@ -415,6 +463,17 @@
             android:layout_height="match_parent"
             android:background="#3AE4D4"
             android:textAlignment="center">
+
+            <Switch
+                android:id="@+id/switch5"
+                android:layout_width="82dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="71dp"
+                android:onClick="EventStart5"
+                android:text="Off" />
 
             <TextView
                 android:id="@+id/points5"

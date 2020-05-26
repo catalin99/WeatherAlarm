@@ -82,6 +82,7 @@ public class EditTimeActivity extends AppCompatActivity {
         editor.putString("hour"+ALARM, txtOldHour.getText().toString());
         editor.putString("minute"+ALARM, txtOldMinutes.getText().toString());
         editor.putString("timezone"+ALARM, txtOldTimezone.getText().toString());
+        editor.putString("switcher"+ALARM, "OFF");
         editor.commit();
 
     }
