@@ -1,6 +1,9 @@
 package catalin.facultate.weatheralarm;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,12 +13,15 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.AlarmClock;
 import android.renderscript.RenderScript;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TIMEZONE = "catalin.facultate.weatheralarm.TIMEZONE";
     public static final String ALARM = "catalin.facultate.weatheralarm.ALARM";
     FusedLocationProviderClient fusedLocationProviderClient;
+    public static TextToSpeech textToSpeech;
 
 
     public void EditAlarm(View view) {
@@ -182,7 +190,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         AndroidNetworking.initialize(getApplicationContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.UK);
+                }
+            }
+        });
         InitializeAlarms();
         GetAlarms();
 
@@ -432,84 +447,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void AddAlarm(String hour, String minutes, String timezone) {
-//        if(hour.startsWith("0"))
-//            hour = hour.replace("0", "");
         int realHour = timezone.equals("PM") ? Integer.parseInt(hour) + 12 : Integer.parseInt(hour);
         int realMinutes = Integer.parseInt(minutes);
-        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
-        intent.putExtra(AlarmClock.EXTRA_HOUR, realHour);
-        intent.putExtra(AlarmClock.EXTRA_MINUTES, realMinutes);
-        GetGpsData(intent);
-        //startActivity(intent);
-    }
-
-
-    public void GetGpsData(final Intent intent) {
-        if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if(location != null){
-                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                        try {
-                            List<Address> addresses = geocoder.getFromLocation(
-                                    location.getLatitude(), location.getLongitude(), 1
-                            );
-                            Log.i("gps", "Lat:" + addresses.get(0).getLatitude() + "; Long:"+addresses.get(0).getLongitude());
-                            GetWeather(addresses.get(0).getLatitude(), addresses.get(0).getLongitude(), addresses.get(0).getLocality(), intent);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-            });
+        if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            CreateNotification(realHour, realMinutes);
         }
         else
         {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            CreateNotification(realHour, realMinutes);
         }
     }
 
-    public void GetWeather(double latitude, double longitude, final String address, final Intent intent)
+
+    private void CreateNotification(int hour, int minutes)
     {
-        String KEY = "decff345052161600a68df9e762f7c08";
-        String API = "https://api.openweathermap.org/data/2.5/onecall?lat=" + latitude + "&lon=" + longitude + "&units=metric&exclude=hourly,daily&appid=" + KEY;
-        AndroidNetworking.get(API)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("weather", response.toString());
-                        JSONObject currentWeather = null;
-                        try {
-                            currentWeather = response.getJSONObject("current");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            JSONArray description = currentWeather.getJSONArray("weather");
-                            String details = "The weather in " + address + " is " + description.getJSONObject(0).get("description").toString() + " and the temperature is " + currentWeather.get("temp").toString() + " celsius degrees";
-                            intent.putExtra(AlarmClock.EXTRA_MESSAGE, details);
-                            startActivity(intent);
-                            Log.i("details", details);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Log.i("Error", anError.getMessage());
-                    }
-                });
-
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                hour,
+                minutes,
+                0
+        );
+        setAlarm(calendar.getTimeInMillis());
     }
 
+    private void setAlarm(long timeInMillis)
+    {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, MyAlarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC, timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent);
+        Toast.makeText(this,"Alarm is set", Toast.LENGTH_SHORT).show();
+    }
 
 }
 
